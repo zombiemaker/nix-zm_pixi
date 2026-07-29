@@ -46,8 +46,8 @@ This Nix Flake uses a non-conventional Nix attribute path.
         x86_64 = {
           linux = {
             gnu_libc = {
-              shell_pixi_python = pkgs.mkShell {
-                name = "shell_pixi_python";
+              powershell_nixi = pkgs.mkShell {
+                name = "powershell_pixi";
 
                 buildInputs = [
                   pkgs.bashInteractive
@@ -63,8 +63,8 @@ This Nix Flake uses a non-conventional Nix attribute path.
             };
 
             musl_libc = {
-              shell_pixi_python = pkgs.mkShell {
-                name = "shell_pixi_python";
+              powershell_pixi = pkgs.mkShell {
+                name = "powershell_pixi";
 
                 buildInputs = [
                   pkgs.bashInteractive
@@ -72,7 +72,7 @@ This Nix Flake uses a non-conventional Nix attribute path.
 
                 packages = [
                   pkgs.powershell
-                  pkgs.pixi
+                  zm_pixi.machine_code.x86_64.linux.musl_libc
                 ];
               };
             };
