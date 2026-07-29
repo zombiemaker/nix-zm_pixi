@@ -7,7 +7,6 @@ This Nix Flake uses a non-conventional Nix attribute path.
   - machine_code
     - x86_64
       - linux
-        - gnu_libc
         - musl_libc
   - human_code
     - rust
@@ -17,4 +16,71 @@ This Nix Flake uses a non-conventional Nix attribute path.
         - gnu_libc
           - gnu_bash
           - powershell
-          - default                         :
+          - default
+
+## To Use In A Nix Flake
+
+```nix
+{
+  description = "Your Awesome Flake";
+
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/26.05";
+    zm_pixi_repo.url = "github:zombiemaker/nix-zm_pixi";
+  };
+
+  outputs = {
+    self,
+    nixpkgs,
+    zm_pixi_repo
+  }:
+
+  let
+    nixpkgs_runtime_system = "x86_64-linux";
+    pkgs = nixpkgs.legacyPackages.${nixpkgs_runtime_system};
+    zm_pixi = zm_pixi_repo.v0_75_0; # Set the version of Pixi you want to use ("latest" is the most current version)
+
+  in {
+    latest = {
+      shells = {
+        x86_64 = {
+          linux = {
+            gnu_libc = {
+              shell_pixi_python = pkgs.mkShell {
+                name = "shell_pixi_python";
+
+                buildInputs = [
+                  pkgs.bashInteractive
+                ];
+
+                packages = [
+                  pkgs.powershell
+                  zm_pixi.machine_code.x86_64.linux.musl_libc
+                ];
+              };
+
+              default = self.devShells.x86_64-linux.pixi_vortex_python_api;
+            };
+
+            musl_libc = {
+              shell_pixi_python = pkgs.mkShell {
+                name = "shell_pixi_python";
+
+                buildInputs = [
+                  pkgs.bashInteractive
+                ];
+
+                packages = [
+                  pkgs.powershell
+                  pkgs.pixi
+                ];
+              };
+            };
+          };
+        };
+      };
+    };
+  };
+}
+
+```

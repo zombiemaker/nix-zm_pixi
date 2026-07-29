@@ -18,6 +18,8 @@
 
     in {
         v0_75_0 = pixi_v0_75_0 {pkgs = pkgs;};
+
+        latest = self.outputs.v0_75_0;
     };
 }
 
